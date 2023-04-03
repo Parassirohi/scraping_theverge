@@ -1,6 +1,14 @@
 import requests
+import datetime
 from bs4 import BeautifulSoup
 from csv import writer
+
+now = datetime.datetime.now()
+date_string = now.strftime("%d-%m-%y")
+file_name = "verge"
+
+new_file_name = date_string + "_" + file_name + ".csv"
+
 
 link = "https://www.theverge.com"
 
@@ -13,7 +21,7 @@ articles = soup.find_all("div", class_="relative border-b border-gray-31 pb-20 m
 header = ["Id", 'Headline', 'URL', 'Author', 'Date']
 
 
-with open("scraping.csv", "w", encoding="utf8", newline='') as f:
+with open(new_file_name, "w", encoding="utf8", newline='') as f:
     thewriter = writer(f)
     thewriter.writerow(header)
 
@@ -26,8 +34,6 @@ with open("scraping.csv", "w", encoding="utf8", newline='') as f:
         author = article.find("a", class_="text-gray-31 hover:shadow-underline-inherit dark:text-franklin mr-8").text
         date = article.find("span", class_="text-gray-63 dark:text-gray-94").text
 
-        article.object.create()
-
         info = [count, headline, url, author, date]
         thewriter.writerow(info)
         count += 1
@@ -35,7 +41,7 @@ with open("scraping.csv", "w", encoding="utf8", newline='') as f:
 topstoryarticles = soup.find_all("div", class_="max-w-content-block-standard md:w-content-block-compact "
                                                "md:max-w-content-block-compact lg:w-[240px] lg:max-w-[240px] lg:pr-10")
 
-with open('scraping.csv', 'a', encoding='utf8', newline='') as f:
+with open(new_file_name, 'a', encoding='utf8', newline='') as f:
     thewriter = writer(f)
     for story in topstoryarticles:
         headline = story.find(class_="group-hover:shadow-underline-franklin").text
